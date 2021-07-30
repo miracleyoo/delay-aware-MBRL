@@ -6,6 +6,7 @@ import os
 import argparse
 import pprint
 import copy
+# import tensorflow as tf
 
 from dotmap import DotMap
 
@@ -14,6 +15,11 @@ from dmbrl.controllers.MPC import MPC
 from dmbrl.config import create_config
 from dmbrl.misc import logger
 
+# config = tf.ConfigProto()
+# config.gpu_options.per_process_gpu_memory_fraction = 0.9
+# config.gpu_options.allow_growth = True
+# config.gpu_options.polling_inactive_delay_msecs = 10
+# tf.Session(config=config)#.close()
 
 def main(env, ctrl_type, ctrl_args, overrides, logdir, args):
     ctrl_args = DotMap(**{key: val for (key, val) in ctrl_args})

@@ -34,6 +34,7 @@ class GymINVPendulumConfigModule:
         )
         cfg = tf.ConfigProto()
         cfg.gpu_options.allow_growth = True
+        # cfg.gpu_options.per_process_gpu_memory_fraction=0.5
         self.SESS = tf.Session(config=cfg)
         self.NN_TRAIN_CFG = {"epochs": 5}
         self.OPT_CFG = {

@@ -5,7 +5,6 @@
 #       defined in GYM
 # -----------------------------------------------------------------------------
 """
-import random
 import numpy as np
 
 from mbbl.config import init_path
@@ -21,10 +20,6 @@ class env(bew.base_env):
 
     def __init__(self, env_name, rand_seed, misc_info):
         super(env, self).__init__(env_name, rand_seed, misc_info)
-        self.counter = 0
-        self.lasttime = 2
-        self.disturb = random.randint(50,100)
-
         self._base_path = init_path.get_abs_base_dir()
 
         self._len_qpos, self._len_qvel = \
@@ -59,17 +54,6 @@ class env(bew.base_env):
         else:
             done = False  # will raise warnings -> set logger flag to ignore
         self._old_ob = np.array(ob)
-
-        if self.counter>0 and self.counter%self.disturb == 0:
-            hori_force = (random.random()+1)*0.981
-            self._env.model.opt.gravity[0] = hori_force
-        if self.counter>self.lasttime and self.counter%self.disturb == self.lasttime:
-            self._env.model.opt.gravity[0] = 0
-            self.disturb = random.randint(50,100)
-            self.counter=0
-        
-        self.counter+=1
-
         return ob, reward, done, info
 
     def reset(self, control_info={}):

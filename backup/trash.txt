@@ -1,0 +1,67 @@
+2021-07-27 17:12:42.286002: E tensorflow/stream_executor/cuda/cuda_blas.cc:647] failed to run cuBLAS routine cublasSgemmBatched: CUBLAS_STATUS_EXECUTION_FAILED
+2021-07-27 17:12:42.286025: E tensorflow/stream_executor/cuda/cuda_blas.cc:2505] Internal: failed BLAS call, see log for details
+Network training:   0%|                                                                                                                                                                                                                                                           | 0/5 [00:00<?, ?epoch(s)/s]
+Traceback (most recent call last):
+  File "/home/miracle/anaconda3/envs/gym2/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1322, in _do_call
+    return fn(*args)
+  File "/home/miracle/anaconda3/envs/gym2/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1307, in _run_fn
+    options, feed_dict, fetch_list, target_list, run_metadata)
+  File "/home/miracle/anaconda3/envs/gym2/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1409, in _call_tf_sessionrun
+    run_metadata)
+tensorflow.python.framework.errors_impl.InternalError: Blas xGEMMBatched launch failed : a.shape=[5,32,5], b.shape=[5,5,200], m=32, n=200, k=5, batch_size=5
+         [[Node: model_1/MatMul = BatchMatMul[T=DT_FLOAT, adj_x=false, adj_y=false, _device="/job:localhost/replica:0/task:0/device:GPU:0"](model_1/truediv, model/Layer0/FC_weights/read)]]
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "mbexp.py", line 52, in <module>
+    main(args.env, "MPC", args.ctrl_arg, args.override, args.logdir, args)
+  File "mbexp.py", line 35, in main
+    exp.run_experiment()
+  File "/home/miracle/Documents/delay-aware-MBRL-master/dmbrl/misc/MBExp.py", line 119, in run_experiment
+    [sample["rewards"] for sample in samples]
+  File "/home/miracle/Documents/delay-aware-MBRL-master/dmbrl/controllers/MPC.py", line 208, in train
+    self.model.train(self.train_in, self.train_targs, **self.model_train_cfg)
+  File "/home/miracle/Documents/delay-aware-MBRL-master/dmbrl/modeling/models/BNN.py", line 265, in train
+    feed_dict={self.sy_train_in: inputs[batch_idxs], self.sy_train_targ: targets[batch_idxs]}
+  File "/home/miracle/anaconda3/envs/gym2/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 900, in run
+    run_metadata_ptr)
+  File "/home/miracle/anaconda3/envs/gym2/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1135, in _run
+    feed_dict_tensor, options, run_metadata)
+  File "/home/miracle/anaconda3/envs/gym2/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1316, in _do_run
+    run_metadata)
+  File "/home/miracle/anaconda3/envs/gym2/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1335, in _do_call
+    raise type(e)(node_def, op, message)
+tensorflow.python.framework.errors_impl.InternalError: Blas xGEMMBatched launch failed : a.shape=[5,32,5], b.shape=[5,5,200], m=32, n=200, k=5, batch_size=5
+         [[Node: model_1/MatMul = BatchMatMul[T=DT_FLOAT, adj_x=false, adj_y=false, _device="/job:localhost/replica:0/task:0/device:GPU:0"](model_1/truediv, model/Layer0/FC_weights/read)]]
+
+Caused by op 'model_1/MatMul', defined at:
+  File "mbexp.py", line 52, in <module>
+    main(args.env, "MPC", args.ctrl_arg, args.override, args.logdir, args)
+  File "mbexp.py", line 25, in main
+    cfg.exp_cfg.exp_cfg.policy = MPC(cfg.ctrl_cfg)
+  File "/home/miracle/Documents/delay-aware-MBRL-master/dmbrl/controllers/MPC.py", line 99, in __init__
+    )(params.prop_cfg.model_init_cfg, misc=params)
+  File "/home/miracle/Documents/delay-aware-MBRL-master/dmbrl/config/gym_invertedPendulum.py", line 123, in nn_constructor
+    model.finalize(tf.train.AdamOptimizer, {"learning_rate": 0.001})
+  File "/home/miracle/Documents/delay-aware-MBRL-master/dmbrl/modeling/models/BNN.py", line 181, in finalize
+    train_loss = tf.reduce_sum(self._compile_losses(self.sy_train_in, self.sy_train_targ, inc_var_loss=True))
+  File "/home/miracle/Documents/delay-aware-MBRL-master/dmbrl/modeling/models/BNN.py", line 443, in _compile_losses
+    mean, log_var = self._compile_outputs(inputs, ret_log_var=True, bm_train=True)
+  File "/home/miracle/Documents/delay-aware-MBRL-master/dmbrl/modeling/models/BNN.py", line 414, in _compile_outputs
+    cur_out = layer.compute_output_tensor(cur_out, bm_train, name=str(i_layer_bm))
+  File "/home/miracle/Documents/delay-aware-MBRL-master/dmbrl/modeling/layers/FC.py", line 82, in compute_output_tensor
+    raw_output = tf.matmul(input_tensor, self.weights) + self.biases
+  File "/home/miracle/anaconda3/envs/gym2/lib/python3.6/site-packages/tensorflow/python/ops/math_ops.py", line 1976, in matmul
+    a, b, adj_x=adjoint_a, adj_y=adjoint_b, name=name)
+  File "/home/miracle/anaconda3/envs/gym2/lib/python3.6/site-packages/tensorflow/python/ops/gen_math_ops.py", line 1236, in batch_mat_mul
+    "BatchMatMul", x=x, y=y, adj_x=adj_x, adj_y=adj_y, name=name)
+  File "/home/miracle/anaconda3/envs/gym2/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py", line 787, in _apply_op_helper
+    op_def=op_def)
+  File "/home/miracle/anaconda3/envs/gym2/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 3414, in create_op
+    op_def=op_def)
+  File "/home/miracle/anaconda3/envs/gym2/lib/python3.6/site-packages/tensorflow/python/framework/ops.py", line 1740, in __init__
+    self._traceback = self._graph._extract_stack()  # pylint: disable=protected-access
+
+InternalError (see above for traceback): Blas xGEMMBatched launch failed : a.shape=[5,32,5], b.shape=[5,5,200], m=32, n=200, k=5, batch_size=5
+         [[Node: model_1/MatMul = BatchMatMul[T=DT_FLOAT, adj_x=false, adj_y=false, _device="/job:localhost/replica:0/task:0/device:GPU:0"](model_1/truediv, model/Layer0/FC_weights/read)]]
